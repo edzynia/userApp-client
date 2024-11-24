@@ -1,8 +1,8 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { AppDispatch, RootState } from '../redux/store';
-import { loginUser } from '../redux/authSlice';
+import { loginUser, clearError } from '../redux/authSlice';
 import InputField from '../UI/InputField';
 import FormWrapper from '../UI/FormWrapper';
 import FormButton from '../UI/FormButton';
@@ -22,6 +22,13 @@ const LoginForm: React.FC = () => {
   const navigate = useNavigate();
 
   const { loading, error } = useSelector((state: RootState) => state.auth);
+
+  // Clear error when component unmounts
+  useEffect(() => {
+    return () => {
+      dispatch(clearError());
+    };
+  }, [dispatch]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

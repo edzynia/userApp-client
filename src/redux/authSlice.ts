@@ -27,6 +27,10 @@ export const loginUser = createAsyncThunk<
     const FAKE_PASSWORD = process.env.REACT_APP_FAKE_PASSWORD || '123';
     const FAKE_TOKEN = process.env.REACT_APP_FAKE_TOKEN || 'fake-token-123456';
 
+    if (!email || !password) {
+      throw new Error('Email and password are required.');
+    }
+
     if (password !== FAKE_PASSWORD) {
       throw new Error('Incorrect email or password.');
     }
@@ -36,6 +40,7 @@ export const loginUser = createAsyncThunk<
     if (!userResponse.ok) {
       throw new Error('Failed to fetch users.');
     }
+
     const users = await userResponse.json();
 
     // Check if email exists
@@ -63,6 +68,12 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.error = null;
     },
+    clearError(state) {
+      state.error = null; // Clear error
+    },
+    resetAuthState(state) {
+      return initialState; // Reset to initial state
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -75,6 +86,7 @@ const authSlice = createSlice({
         (state, action: PayloadAction<{ token: string; id: number }>) => {
           state.token = action.payload.token;
           state.isAuthenticated = true;
+          state.email = action.payload.token; // Optional if email is returned
           state.loading = false;
         },
       )
@@ -88,5 +100,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, clearError, resetAuthState } = authSlice.actions;
 export default authSlice.reducer;
