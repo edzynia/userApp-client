@@ -154,7 +154,7 @@ const UserProfile: React.FC = () => {
 
   return (
     <div className='min-h-screen flex justify-center items-start'>
-      <div className='w-full max-w-4xl p-6'>
+      <div className='w-full max-w-4xl'>
         {loading && <div>Loading user data...</div>}
         {error && <div className='text-red-500'>{error}</div>}
         {!loading && !error && currentUser && (
@@ -193,10 +193,7 @@ const UserProfile: React.FC = () => {
       )}
 
       {showSuccessModal && (
-        <SuccessModal
-          message='Your changes have been successfully saved!'
-          onClose={() => setShowSuccessModal(false)}
-        />
+        <SuccessModal onClose={() => setShowSuccessModal(false)} />
       )}
     </div>
   );

@@ -1,6 +1,6 @@
 # User App Project Documentation
 
-https://vercel.com/echerevkos-projects/user-app-client
+https://user-app-client-33j1hmxtx-echerevkos-projects.vercel.app/
 
 ## Overview
 

@@ -40,11 +40,9 @@ const UserList: React.FC = () => {
   };
 
   return (
-    <div className='min-h-screen pt-12 flex justify-center items-start'>
+    <div className='min-h-screen flex justify-center items-start'>
       <div className='bg-white rounded-lg shadow-lg w-full max-w-4xl p-6'>
-        <h1 className='text-3xl text-gray-700 font-bold text-center mb-6'>
-          User List
-        </h1>
+        <h1 className='text-2xl text-textGray text-center mb-6'>User List</h1>
         <div className='space-y-4'>
           {loading && <div>Loading...</div>}
           {error && <div className='text-red-500'>{error}</div>}

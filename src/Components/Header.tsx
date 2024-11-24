@@ -14,7 +14,7 @@ const Header: React.FC<HeaderProps> = ({ logoSrc, logoAlt }) => {
   };
 
   return (
-    <header className='flex items-center justify-center py-4'>
+    <header className='flex items-center justify-center'>
       <img
         src={logoSrc}
         alt={logoAlt}
