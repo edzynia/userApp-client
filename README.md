@@ -8,6 +8,8 @@ This project is a React-based application with a simple Express - Node.js server
 
 The client application employs straightforward solutions using RTK and saves data to local storage. The main API endpoints, including token generation, are handled by the server application. Additionally, since the initial requirements specified implementing authorization via email and password, the server uses mocked data for this purpose.
 
+The initial requirement was to build a simple application using React. However, since JWT tokens are inherently generated on the backend for secure authentication and authorization, I decided to implement a simple server to handle these responsibilities. Additionally, I migrated all API endpoints to the server to centralize data handling and enhance the application's structure and security.
+
 Requirements: [PDF Document](<./Qred%20-%20React%20Frontend%20Developer%20-%20Case%20study%20(1).pdf>)
 
 ---
