@@ -23,6 +23,11 @@ const LoginForm: React.FC = () => {
 
   const { loading, error } = useSelector((state: RootState) => state.auth);
 
+  // Scroll to top on component mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Clear error when component unmounts
   useEffect(() => {
     return () => {
@@ -66,6 +71,7 @@ const LoginForm: React.FC = () => {
       if (loginUser.fulfilled.match(resultAction)) {
         const userId = resultAction.payload.id;
         navigate(`/user/${userId}`);
+        window.scrollTo(0, 0);
       } else {
         setErrors({
           form: resultAction.payload || 'Login failed. Please try again.',
@@ -107,9 +113,9 @@ const LoginForm: React.FC = () => {
           error={errors[field.name] || ''}
         />
       ))}
-      {/* Display errors */}
+      {/* Display global errors */}
       {(error || errors.form) && (
-        <div className='text-red-500 mt-2 text-sm text-left pl-4'>
+        <div className='text-red-500 mt-2 text-sm text-left'>
           {error || errors.form}
         </div>
       )}

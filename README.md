@@ -1,12 +1,12 @@
 # User App Project Documentation
 
-https://user-app-client-33j1hmxtx-echerevkos-projects.vercel.app/
+https://user-app-client-l06s62fpj-echerevkos-projects.vercel.app/
 
 ## Overview
 
 This project is a React-based application with a simple Express - Node.js server. It allows users to view, edit, and manage their profiles, authenticate via login, and perform API operations. This documentation covers the user stories, project structure, API details, deployment instructions, and design considerations.
 
-The Client application uses simple solutions based on RTK, saving data to Local Storage. The main API endpoints with the generation of the JWT Token are stored on the Server application. Also, since the initial requirements were to implement authorization by email and password, the server uses mocked data.
+The client application employs straightforward solutions using RTK and saves data to local storage. The main API endpoints, including token generation, are handled by the server application. Additionally, since the initial requirements specified implementing authorization via email and password, the server uses mocked data for this purpose.
 
 Requirements: [PDF Document](<./Qred%20-%20React%20Frontend%20Developer%20-%20Case%20study%20(1).pdf>)
 
@@ -166,7 +166,7 @@ Requirements: [PDF Document](<./Qred%20-%20React%20Frontend%20Developer%20-%20Ca
 - **Framework:** Tailwind CSS
 - **Structure:**
   - Utility-first approach for rapid UI development.
-  - Responsive and laptop layouts.
+  - Responsive and laptop-friendly layouts.
 
 ---
 
@@ -181,21 +181,13 @@ Requirements: [PDF Document](<./Qred%20-%20React%20Frontend%20Developer%20-%20Ca
 ## Future Enhancements
 
 - Add pagination to the user list.
-
 - Improve security by implementing HTTPS-only cookies for token storage.
-
+- Use UI components.
 - Implement CI/CD pipeline for automated testing and deployment.
-
 - Extend business logic testing to include edge cases and error scenarios.
-
 - Migrate mock user data to a dynamic database setup for scalability.
-
 - Add real-time notifications for user updates.
-
 - Implement dark mode for the frontend UI.
-
 - Enhance form validation with more detailed rules and suggestions for correction.
-
 - Create unit tests for critical frontend and backend components.
-
 - Explore GraphQL for more flexible API queries.
