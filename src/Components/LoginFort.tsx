@@ -45,7 +45,6 @@ const LoginForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate inputs
     const validationErrors = validateForm(formData, {
       email: emailValidation,
       password: requiredField,
@@ -66,13 +65,7 @@ const LoginForm: React.FC = () => {
 
       if (loginUser.fulfilled.match(resultAction)) {
         const userId = resultAction.payload.id;
-        if (userId) {
-          navigate(`/user/${userId}`);
-        } else {
-          setErrors({
-            form: 'User ID not found in response. Login failed.',
-          });
-        }
+        navigate(`/user/${userId}`);
       } else {
         setErrors({
           form: resultAction.payload || 'Login failed. Please try again.',

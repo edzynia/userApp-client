@@ -1,9 +1,10 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { getUsersUrl } from '../utils/apiUrls';
+import { getAuthLoginUrl } from '../utils/apiUrls';
 
 interface AuthState {
   token: string | null;
   email: string | null;
+  userId: number | null;
   isAuthenticated: boolean;
   loading: boolean;
   error: string | null;
@@ -12,48 +13,39 @@ interface AuthState {
 const initialState: AuthState = {
   token: null,
   email: null,
+  userId: null,
   isAuthenticated: false,
   loading: false,
   error: null,
 };
 
-// Mock API request for login
 export const loginUser = createAsyncThunk<
-  { token: string; id: number }, // Success response
-  { email: string; password: string }, // Input payload
-  { rejectValue: string } // Rejection payload
+  { token: string; id: number },
+  { email: string; password: string },
+  { rejectValue: string }
 >('auth/loginUser', async ({ email, password }, thunkAPI) => {
   try {
-    const FAKE_PASSWORD = process.env.REACT_APP_FAKE_PASSWORD || '123';
-    const FAKE_TOKEN = process.env.REACT_APP_FAKE_TOKEN || 'fake-token-123456';
+    const response = await fetch(getAuthLoginUrl(), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-    if (!email || !password) {
-      throw new Error('Email and password are required.');
+    if (!response.ok) {
+      throw new Error('Invalid login credentials.');
     }
 
-    if (password !== FAKE_PASSWORD) {
-      throw new Error('Incorrect email or password.');
-    }
+    const data = await response.json();
 
-    // Simulate server logic for user validation
-    const userResponse = await fetch(getUsersUrl());
-    if (!userResponse.ok) {
-      throw new Error('Failed to fetch users.');
-    }
+    // Saving token in local storage
+    localStorage.setItem('token', data.token);
 
-    const users = await userResponse.json();
-
-    // Check if email exists
-    const user = users.find((u: { email: string }) => u.email === email);
-    if (!user) {
-      throw new Error('User not found.');
-    }
-
-    // Return token and user ID
-    return { token: FAKE_TOKEN, id: user.id };
+    return { token: data.token, id: data.userId };
   } catch (error) {
     return thunkAPI.rejectWithValue(
-      error instanceof Error ? error.message : 'Something went wrong.',
+      error instanceof Error ? error.message : 'An unknown error occurred.',
     );
   }
 });
@@ -65,14 +57,13 @@ const authSlice = createSlice({
     logout(state) {
       state.token = null;
       state.email = null;
+      state.userId = null;
       state.isAuthenticated = false;
       state.error = null;
+      localStorage.removeItem('token');
     },
     clearError(state) {
-      state.error = null; // Clear error
-    },
-    resetAuthState(state) {
-      return initialState; // Reset to initial state
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -85,8 +76,8 @@ const authSlice = createSlice({
         loginUser.fulfilled,
         (state, action: PayloadAction<{ token: string; id: number }>) => {
           state.token = action.payload.token;
+          state.userId = action.payload.id;
           state.isAuthenticated = true;
-          state.email = action.payload.token; // Optional if email is returned
           state.loading = false;
         },
       )
@@ -100,5 +91,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, clearError, resetAuthState } = authSlice.actions;
+export const { logout, clearError } = authSlice.actions;
+
 export default authSlice.reducer;

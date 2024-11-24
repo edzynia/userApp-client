@@ -20,18 +20,19 @@ const UserList: React.FC = () => {
     dispatch(fetchUsers());
   }, [dispatch]);
 
+  useEffect(() => {
+    // Clean local storage
+    localStorage.removeItem('currentUser');
+  }, []);
+
   const handleUserClick = (user: User) => {
     setSelectedUser(user);
     setIsModalOpen(true);
   };
 
   const handleModalConfirm = () => {
-    if (selectedUser) {
-      // Save id ones we clicked user
-      localStorage.setItem('selectedUserId', selectedUser.id.toString());
-      // Move to login
-      navigate('/login');
-    }
+    // Move to login
+    navigate('/login');
   };
 
   const handleModalCancel = () => {

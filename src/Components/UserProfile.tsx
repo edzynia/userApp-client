@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../redux/store';
-import { fetchUserById, updateUser } from '../redux/userSlice';
+import { updateUser } from '../redux/userSlice';
+import { fetchUserIfNotCached } from '../utils/userCache';
 import InputField from '../UI/InputField';
 import FormWrapper from '../UI/FormWrapper';
 import FormButton from '../UI/FormButton';
@@ -38,9 +39,15 @@ const UserProfile: React.FC = () => {
 
   useEffect(() => {
     if (id) {
-      dispatch(fetchUserById(parseInt(id, 10)));
+      fetchUserIfNotCached(parseInt(id, 10), dispatch);
     }
   }, [dispatch, id]);
+
+  useEffect(() => {
+    if (!currentUser) {
+      console.warn('User profile not found in state.');
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     if (currentUser) {
@@ -56,6 +63,13 @@ const UserProfile: React.FC = () => {
       setFormData(userData);
     }
   }, [currentUser]);
+
+  // Removing token when we go back to list
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem('token');
+    };
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

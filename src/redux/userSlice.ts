@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../redux/store';
 import { User } from '../types/interfaces';
-import { getUsersUrl, getUserByIdUrl, updateUserUrl } from '../utils/apiUrls'; // Centralized API URLs
+import { getUsersUrl, getUserByIdUrl, updateUserUrl } from '../utils/apiUrls';
 
 interface UserState {
   users: User[];
@@ -21,14 +21,18 @@ const initialState: UserState = {
   error: null,
 };
 
-// Fetch all users
 export const fetchUsers = createAsyncThunk<
   User[],
   void,
   { rejectValue: string }
 >('users/fetchUsers', async (_, { rejectWithValue }) => {
   try {
-    const response = await fetch(getUsersUrl());
+    const response = await fetch(getUsersUrl(), {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
     if (!response.ok) {
       throw new Error('Failed to fetch users');
@@ -36,13 +40,13 @@ export const fetchUsers = createAsyncThunk<
 
     return response.json();
   } catch (error) {
-    return rejectWithValue(
-      error instanceof Error ? error.message : 'An unknown error occurred.',
-    );
+    if (error instanceof Error) {
+      return rejectWithValue(error.message);
+    }
+    return rejectWithValue('An unknown error occurred.');
   }
 });
 
-// Fetch single user
 export const fetchUserById = createAsyncThunk<
   User,
   number,
@@ -75,7 +79,6 @@ export const fetchUserById = createAsyncThunk<
   }
 });
 
-// Update user
 export const updateUser = createAsyncThunk<
   User,
   User,
@@ -114,19 +117,11 @@ const userSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
-    setSelectedUser(
-      state,
-      action: PayloadAction<{ id: number; email: string }>,
-    ) {
-      state.userId = action.payload.id;
-      state.email = action.payload.email;
-    },
-    clearSelectedUser(state) {
-      state.userId = null;
-      state.email = null;
-    },
     clearCurrentUser(state) {
       state.currentUser = null;
+    },
+    fetchUserFromCache(state, action: PayloadAction<User>) {
+      state.currentUser = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -156,28 +151,11 @@ const userSlice = createSlice({
       )
       .addCase(fetchUserById.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || 'Could not upload user';
-      })
-      .addCase(updateUser.fulfilled, (state, action: PayloadAction<User>) => {
-        const updatedUser = action.payload;
-
-        state.users = state.users.map((user) =>
-          user.id === updatedUser.id ? updatedUser : user,
-        );
-
-        if (state.currentUser?.id === updatedUser.id) {
-          state.currentUser = updatedUser;
-        }
-      })
-      .addCase(updateUser.rejected, (state, action) => {
-        state.error = action.payload || 'Failed to update user';
+        state.error = action.payload || 'Failed to fetch user';
       });
   },
 });
 
-// Export actions
-export const { setSelectedUser, clearSelectedUser, clearCurrentUser } =
-  userSlice.actions;
+export const { clearCurrentUser, fetchUserFromCache } = userSlice.actions;
 
-// Export reducer
 export default userSlice.reducer;
